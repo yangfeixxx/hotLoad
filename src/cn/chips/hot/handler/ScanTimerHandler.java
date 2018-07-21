@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 //2018/7/21 cread by yangfei
 public class ScanTimerHandler {
     private HotLoadConfiguration hotLoadConfiguration;
@@ -34,7 +35,7 @@ public class ScanTimerHandler {
                 //考虑运行速度和版本兼容,不要使用foreach和Stream
                 File file = fileList.get(i);
                 Long fileMetaData = FileMetaDataCache.getFileMetaData(file.getAbsolutePath());
-                if (fileMetaData.longValue() != file.lastModified()) {
+                if (fileMetaData == null || fileMetaData.longValue() != file.lastModified()) {
                     try {
                         FileUtils.reLoadFileClass(file);
                         FileMetaDataCache.setFileMetaData(file.getAbsolutePath(), file.lastModified());
