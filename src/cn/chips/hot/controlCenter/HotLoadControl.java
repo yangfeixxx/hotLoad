@@ -9,7 +9,7 @@ import cn.chips.hot.utils.StringUtils;
 public class HotLoadControl {
     private HotLoadConfiguration hotLoadConfiguration;
     private static final Long defaultInterval = 1L;
-    private static final String defaultLocation = System.getProperty("user.dir");
+    private static final String defaultLocation = System.getProperty("user.dir")+"/target";
 
     public HotLoadControl() {
     }
