@@ -28,7 +28,7 @@ public class HotLoadControl {
         if (hotLoadConfiguration == null)
             hotLoadConfiguration = new HotLoadConfiguration();
 
-        if (hotLoadConfiguration.getInterval() == null && hotLoadConfiguration.getInterval() <= 0) {
+        if (hotLoadConfiguration.getInterval() == null || hotLoadConfiguration.getInterval() <= 0) {
             hotLoadConfiguration.setInterval(defaultInterval);
         }
         if (!StringUtils.isNotEmpty(hotLoadConfiguration.getLocation())) {
