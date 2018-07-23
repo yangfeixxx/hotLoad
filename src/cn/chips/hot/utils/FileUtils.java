@@ -3,6 +3,7 @@ package cn.chips.hot.utils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
 //2018/7/21 cread by yangfei
 public class FileUtils {
 
@@ -15,12 +16,12 @@ public class FileUtils {
                 //考虑运行速度和版本兼容,不要使用foreach和Stream
                 if (files[i].isDirectory())
                     getFileList(files[i].getAbsolutePath(), list);
-                else
+                else if (files[i].getName().lastIndexOf(".class") != -1)
                     list.add(files[i]);
 //                    FileMetaDataCache.setFileMetaData(files[i].getAbsolutePath(), files[i].lastModified());
 
             }
-        } else
+        } else if (currentFile.getName().lastIndexOf(".class") != -1)
             list.add(currentFile);
 //            FileMetaDataCache.setFileMetaData(currentFile.getAbsolutePath(), currentFile.lastModified());
     }
