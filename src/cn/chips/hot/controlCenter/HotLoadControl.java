@@ -8,8 +8,8 @@ import cn.chips.hot.utils.StringUtils;
 //2018/7/21 cread by yangfei
 public class HotLoadControl {
     private HotLoadConfiguration hotLoadConfiguration;
-    private static final Long defaultInterval = 1L;
-    private static final String defaultLocation = System.getProperty("user.dir")+"/target";
+    private static final Long DEFAULINTERVAL = 1L;
+    private static final String DEFAULTLOCATION = System.getProperty("user.dir") + "/target";
 
     public HotLoadControl() {
     }
@@ -25,14 +25,12 @@ public class HotLoadControl {
 
     private void check(HotLoadConfiguration hotLoadConfiguration) {
 
-        if (hotLoadConfiguration == null)
-            hotLoadConfiguration = new HotLoadConfiguration();
 
         if (hotLoadConfiguration.getInterval() == null || hotLoadConfiguration.getInterval() <= 0) {
-            hotLoadConfiguration.setInterval(defaultInterval);
+            hotLoadConfiguration.setInterval(DEFAULINTERVAL);
         }
         if (!StringUtils.isNotEmpty(hotLoadConfiguration.getLocation())) {
-            hotLoadConfiguration.setLocation(defaultLocation);
+            hotLoadConfiguration.setLocation(DEFAULTLOCATION);
         }
 
     }
