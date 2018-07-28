@@ -36,7 +36,7 @@ public class FileUtils {
         private File file;
 
         public MyClassLoader(File file) {
-            super(Thread.currentThread().getContextClassLoader());//ClassLoader.getSystemClassLoader() 坑点,注释的这个类加载器只能在SE环境下加载运行
+            super(Thread.currentThread().getContextClassLoader());//ClassLoader.getSystemClassLoader() 坑点,注释的这个类加载器只能会拿到ApplicationClassLoader,而它只会加载CLASSPATH下路径的类,一旦没找到,就报ClassNotFount,所以拿当前上下文类加载器,拿到的就是当前容器的类加载器
             this.file = file;
         }
 
@@ -44,22 +44,32 @@ public class FileUtils {
         protected Class<?> findClass(String name) throws ClassNotFoundException {
 
             byte[] bytes = new byte[0];
+
             try {
                 bytes = MyLoadClass();
             } catch (IOException e) {
                 e.printStackTrace();
+                System.err.println("拿class文件二进制流时出现异常");
             }
+
             return this.defineClass(name, bytes, 0, bytes.length);
         }
 
         private byte[] MyLoadClass() throws IOException {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             int b = 0;
-            while ((b = fileInputStream.read()) != -1) {
-                byteArrayOutputStream.write(b);
+            FileInputStream fileInputStream = null;
+            ByteArrayOutputStream byteArrayOutputStream = null;
+            try {
+                fileInputStream = new FileInputStream(file);
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                while ((b = fileInputStream.read()) != -1) {
+                    byteArrayOutputStream.write(b);
+                }
+                return byteArrayOutputStream.toByteArray();
+            } finally {
+                fileInputStream.close();
+                byteArrayOutputStream.close();
             }
-            return byteArrayOutputStream.toByteArray();
         }
     }
 

@@ -7,33 +7,27 @@ import cn.chips.hot.utils.StringUtils;
 
 //2018/7/21 cread by yangfei
 public class HotLoadControl {
-    private HotLoadConfiguration hotLoadConfiguration;
-    private static final Long DEFAULINTERVAL = 1L;
-    private static final String DEFAULTLOCATION = System.getProperty("user.dir") + "/target";
+
 
     public HotLoadControl() {
     }
 
-    public HotLoadControl(HotLoadConfiguration hotLoadConfiguration) {
-        this.hotLoadConfiguration = hotLoadConfiguration;
-    }
 
     public void start() {
-        check(hotLoadConfiguration);
-        new ScanHandler(this.hotLoadConfiguration).startScan();
+        check();
+        new ScanHandler().startScan();
     }
 
-    private void check(HotLoadConfiguration hotLoadConfiguration) {
-
-
-        if (hotLoadConfiguration.getInterval() == null || hotLoadConfiguration.getInterval() <= 0) {
-            hotLoadConfiguration.setInterval(DEFAULINTERVAL);
+    private void check() {
+        if (HotLoadConfiguration.interval.intValue() <= 0) {
+            throw new RuntimeException("每次扫描间隔时间必须大于0,如不设置,默认为1S一次");
         }
-        if (!StringUtils.isNotEmpty(hotLoadConfiguration.getLocation())) {
-            hotLoadConfiguration.setLocation(DEFAULTLOCATION);
-        }
+
 
     }
 
-
+    public static void main(String args[]) {
+        Long a = 1L;
+        System.out.println(a == 1);
+    }
 }

@@ -13,16 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 //2018/7/21 cread by yangfei
 public class ScanTimerHandler {
-    private HotLoadConfiguration hotLoadConfiguration;
     private static final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-
-    public ScanTimerHandler(HotLoadConfiguration hotLoadConfiguration) {
-        this.hotLoadConfiguration = hotLoadConfiguration;
-    }
 
 
     public void startScanTimer() {
-        scheduledExecutorService.scheduleAtFixedRate(new ScanTimerRunable(), 5, hotLoadConfiguration.getInterval(), TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(new ScanTimerRunable(), 5, HotLoadConfiguration.interval, TimeUnit.SECONDS);
     }
 
     private class ScanTimerRunable implements Runnable {
@@ -30,15 +25,15 @@ public class ScanTimerHandler {
         @Override
         public void run() {
             List<File> fileList = new ArrayList();
-            FileUtils.getFileList(hotLoadConfiguration.getLocation(), fileList);
+            FileUtils.getFileList(HotLoadConfiguration.location, fileList);
             for (int i = 0; i < fileList.size(); i++) {
-                //考虑运行速度和版本兼容,不要使用foreach和Stream
+                //考虑运行速度和版本兼容,不使用foreach和Stream
                 File file = fileList.get(i);
-                Long fileMetaData = FileMetaDataCache.getFileMetaData(file.getAbsolutePath());
-                if (fileMetaData == null || fileMetaData.longValue() != file.lastModified()) {
+                File fileMetaData = FileMetaDataCache.getFileMetaData(file.getAbsolutePath());
+                if (fileMetaData == null || fileMetaData.lastModified() != file.lastModified()) {
                     try {
                         FileUtils.reLoadFileClass(file);
-                        FileMetaDataCache.setFileMetaData(file.getAbsolutePath(), file.lastModified());
+                        FileMetaDataCache.setFileMetaData(file.getAbsolutePath(), file);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
