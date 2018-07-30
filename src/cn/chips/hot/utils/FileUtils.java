@@ -6,7 +6,8 @@ import java.util.List;
 
 //2018/7/21 cread by yangfei
 public class FileUtils {
-
+    private static final List<String> excludeFolders = new ArrayList<>();
+    private static final List<String> excludeClassFiles = new ArrayList<>();
 
     public static void getClassFileList(String fileLocation, List<File> list) {
         File currentFile = new File(fileLocation);
@@ -14,22 +15,56 @@ public class FileUtils {
             File[] files = currentFile.listFiles();
             for (int i = 0; i < files.length; i++) {
                 //考虑运行速度和版本兼容,不使用foreach和Stream
-                if (files[i].isDirectory())
+                if (pickDirectory(files[i]))
                     getClassFileList(files[i].getAbsolutePath(), list);
-                else if (files[i].getName().lastIndexOf(".class") != -1)
+                else if (pickFile(currentFile))
                     list.add(files[i]);
 //                    FileMetaDataCache.setFileMetaData(files[i].getAbsolutePath(), files[i].lastModified());
 
             }
-        } else if (currentFile.getName().lastIndexOf(".class") != -1)
+        } else if (pickFile(currentFile))
             list.add(currentFile);
 //            FileMetaDataCache.setFileMetaData(currentFile.getAbsolutePath(), currentFile.lastModified());
+    }
+
+    private static boolean pickDirectory(File file) {
+        return file.isDirectory() && !isExcludeFolder(file.getAbsolutePath());
+    }
+
+    private static boolean pickFile(File file) {
+        return file.getName().lastIndexOf(".class") != -1 && !isExcludeClassFile(file.getAbsolutePath());
+    }
+
+    private static boolean isExcludeFolder(String fileName) {
+        return excludeFolders.contains(fileName);
+    }
+
+    private static boolean isExcludeClassFile(String fileName) {
+        return excludeClassFiles.contains(fileName);
+    }
+
+    public static void addExcludeFile(String... fileNames) {
+
+        for (int i = 0; i < fileNames.length; i++) {
+
+            String fileName = fileNames[i];
+
+            if (StringUtils.isNotEmpty(fileName)) {
+
+                String[] fileSplit = fileName.split(".");
+
+                if (fileSplit.length > 1 && "class".equals(fileSplit[1]))
+                    excludeClassFiles.add(fileName);
+
+                else if (fileSplit.length == 1)
+                    excludeFolders.add(fileName);
+            }
+        }
     }
 
     public static void reLoadFileClass(File file) throws ClassNotFoundException {
         MyClassLoader myClassLoader = new MyClassLoader(file);
         myClassLoader.loadClass(file.getAbsolutePath());
-
     }
 
     private static class MyClassLoader extends ClassLoader {

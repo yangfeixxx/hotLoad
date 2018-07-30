@@ -1,7 +1,7 @@
 package cn.chips.hot.configuration;
 
 //2018/7/21 cread by yangfei
-public class HotLoadConfiguration {
+public class HotLoadConfiguration extends HotConfiguration {
     private long interval = DEFAULTINTERVAL;
     private String location = DEFAULTLOCATION;
 
