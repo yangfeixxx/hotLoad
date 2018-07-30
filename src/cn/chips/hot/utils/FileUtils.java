@@ -63,6 +63,9 @@ public class FileUtils {
     }
 
     public static void reLoadFileClass(File file) throws ClassNotFoundException {
+        if (file == null || file.getName().lastIndexOf(".class") == -1)
+            throw new RuntimeException("不能加载非class文件");
+
         MyClassLoader myClassLoader = new MyClassLoader(file);
         myClassLoader.loadClass(file.getAbsolutePath());
     }
