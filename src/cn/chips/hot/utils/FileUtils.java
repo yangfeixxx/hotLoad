@@ -11,7 +11,7 @@ public class FileUtils {
 
     public static void getClassFileList(String fileLocation, List<File> list) {
         File currentFile = new File(fileLocation);
-        if (currentFile.isDirectory()) {
+        if (pickDirectory(currentFile)) {
             File[] files = currentFile.listFiles();
             for (int i = 0; i < files.length; i++) {
                 //考虑运行速度和版本兼容,不使用foreach和Stream
