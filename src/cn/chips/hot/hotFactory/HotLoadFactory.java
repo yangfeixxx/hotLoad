@@ -1,8 +1,7 @@
-package cn.chips.hot.HotFactory;
+package cn.chips.hot.hotFactory;
 
 import cn.chips.hot.configuration.HotLoadConfiguration;
 import cn.chips.hot.controlCenter.HotLoadControl;
-import cn.chips.hot.hotInterface.Control;
 
 //2018/7/21 cread by yangfei
 public class HotLoadFactory {

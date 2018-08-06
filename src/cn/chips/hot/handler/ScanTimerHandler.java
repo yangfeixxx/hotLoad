@@ -2,6 +2,7 @@ package cn.chips.hot.handler;
 
 import cn.chips.hot.cache.FileMetaDataCache;
 import cn.chips.hot.configuration.HotLoadConfiguration;
+import cn.chips.hot.loader.HotLoader;
 import cn.chips.hot.utils.FileUtils;
 
 import java.io.File;
@@ -14,10 +15,11 @@ import java.util.concurrent.TimeUnit;
 //2018/7/21 cread by yangfei
 public class ScanTimerHandler {
     private HotLoadConfiguration hotLoadConfiguration;
-    private static final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService scheduledExecutorService;
 
     public ScanTimerHandler(HotLoadConfiguration hotLoadConfiguration) {
         this.hotLoadConfiguration = hotLoadConfiguration;
+        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
 
@@ -29,15 +31,16 @@ public class ScanTimerHandler {
 
         @Override
         public void run() {
+            // System.out.println("定时器启动了");
             List<File> fileList = new ArrayList();
             FileUtils.getClassFileList(hotLoadConfiguration.getLocation(), fileList);
             for (int i = 0; i < fileList.size(); i++) {
-                //考虑运行速度和版本兼容,不要使用foreach和Stream
+                //考虑运行速度和版本兼容,不使用foreach和Stream
                 File file = fileList.get(i);
                 File fileMetaData = FileMetaDataCache.getFileMetaData(file.getAbsolutePath());
                 if (fileMetaData == null || fileMetaData.lastModified() != file.lastModified()) {
                     try {
-                        FileUtils.reLoadFileClass(file);
+                        HotLoader.reLoadFileClass(file);
                         FileMetaDataCache.setFileMetaData(file.getAbsolutePath(), file);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();

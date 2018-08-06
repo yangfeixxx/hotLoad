@@ -1,4 +1,4 @@
-package cn.chips.hot.HotFactory;
+package cn.chips.hot.hotFactory;
 
 import cn.chips.hot.configuration.HotLoadConfiguration;
 

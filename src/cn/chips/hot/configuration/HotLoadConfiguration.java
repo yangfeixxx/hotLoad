@@ -6,7 +6,7 @@ public class HotLoadConfiguration extends HotConfiguration {
     private String location = DEFAULTLOCATION;
 
     private static final long DEFAULTINTERVAL = 1L;
-    private static final String DEFAULTLOCATION = System.getProperty("user.dir") + "/target";
+    private static final String DEFAULTLOCATION = System.getProperty("user.dir");
 
     public Long getInterval() {
         return interval;
